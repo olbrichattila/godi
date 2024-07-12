@@ -1,5 +1,5 @@
 // Package container implements simple Dependency injection container
-package container
+package godi
 
 import (
 	"errors"
