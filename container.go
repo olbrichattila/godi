@@ -3,8 +3,8 @@ package godi
 
 import (
 	"errors"
-	"path"
 	"reflect"
+	"strings"
 )
 
 var (
@@ -22,7 +22,7 @@ type cont struct {
 	dependencies map[string]interface{}
 }
 
-// Set new dependency, provide a "packagename.Interfacename" (use the packagename even if you are in the main package!) as a string, and your dependency, which always should be an interface or struct
+// Set new dependency, provide a "packagepath.Interfacename" as a string, and your dependency, which always should be an interface or struct
 func (t *cont) Set(paramName string, dependency interface{}) {
 	t.dependencies[paramName] = dependency
 }
@@ -62,14 +62,8 @@ func (t *cont) Get(obj interface{}) (interface{}, error) {
 }
 
 func (t *cont) resolve(paramType reflect.Type) (interface{}, error) {
-	paramName := paramType.Name()
-	pkgPath := paramType.PkgPath()
-	fullTypeName := paramName
-	if pkgPath != "" {
-		pkgName := path.Base(pkgPath)
-		fullTypeName = pkgName + "." + paramName
-	}
-
+	pkgPath := paramType.PkgPath() + "/" + paramType.Name()
+	fullTypeName := strings.Join(strings.Split(pkgPath, "/")[1:], ".")
 	param, ok := t.dependencies[fullTypeName]
 	if !ok {
 		return nil, errCannotBeResolved
