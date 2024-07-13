@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	godi "github.com/olbrichattila/godi/internal"
+	godi "github.com/olbrichattila/godi/pkg"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -34,7 +34,7 @@ func (t *OneRecursionTestSuite) TestFirstRecursionResolveSecond() {
 	noParamConstructorMock := newNoParamConstructorMock()
 	oneParamConstructorMock := newOneParamConstructorMock()
 
-	container.Set("olbrichattila.godi.test.noParamConstructorInterface", noParamConstructorMock)
+	container.Set("olbrichattila.godi.internal.test.noParamConstructorInterface", noParamConstructorMock)
 
 	_, err := container.Get(oneParamConstructorMock)
 	t.Nil(err)
@@ -49,7 +49,7 @@ func (t *OneRecursionTestSuite) TestFirstRecursionResolveMultiple() {
 	noParamConstructorMock := newNoParamConstructorMock()
 	oneParamConstructorMock := newOneParamConstructorMock()
 
-	container.Set("olbrichattila.godi.test.noParamConstructorInterface", noParamConstructorMock)
+	container.Set("olbrichattila.godi.internal.test.noParamConstructorInterface", noParamConstructorMock)
 
 	_, err := container.Get(oneParamConstructorMock)
 	t.Nil(err)

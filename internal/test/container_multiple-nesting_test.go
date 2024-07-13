@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	godi "github.com/olbrichattila/godi/internal"
+	godi "github.com/olbrichattila/godi/pkg"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -22,8 +22,8 @@ func (t *NestingTestSuite) TestMultipleNesting() {
 	nestedSecondMock := newNestedSecondMock()
 	nestedThirdMock := newNestedThirdMock()
 
-	container.Set("olbrichattila.godi.test.nestedSecondInterface", nestedSecondMock)
-	container.Set("olbrichattila.godi.test.nestedThirdInterface", nestedThirdMock)
+	container.Set("olbrichattila.godi.internal.test.nestedSecondInterface", nestedSecondMock)
+	container.Set("olbrichattila.godi.internal.test.nestedThirdInterface", nestedThirdMock)
 
 	_, err := container.Get(nestedFirstMock)
 	t.Nil(err)

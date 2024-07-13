@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	godi "github.com/olbrichattila/godi/internal"
+	godi "github.com/olbrichattila/godi/pkg"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -21,7 +21,7 @@ func (t *TreeRecursionTestSuite) TestFirstRecursionResolveMultiple() {
 	noParamConstructorMock := newNoParamConstructorMock()
 	treeParamConstructorMock := newTreeParamConstructorMock()
 
-	container.Set("olbrichattila.godi.test.noParamConstructorInterface", noParamConstructorMock)
+	container.Set("olbrichattila.godi.internal.test.noParamConstructorInterface", noParamConstructorMock)
 
 	_, err := container.Get(treeParamConstructorMock)
 	t.Nil(err)

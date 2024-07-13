@@ -33,7 +33,7 @@ Where "TestInterface" is your interface name, "NewTest2()" returns an interface 
 
 - If it is in defined in your home folder, then use only the interface name
 - If it is in a sub folder, provide full path, exampe: ```examplemodule-1.mod.ExampleInterface``` where your interface defined in folder ```./examplemodule-1/mod/```
-- If you initiated your project with a domain. (for example this module) ```github.com/olbrichattila/godi```. use the path from your module as well. Example: ```olbrichattila.godi.test.noParamConstructorInterface```
+- If you initiated your project with a domain. (for example this module) ```github.com/olbrichattila/godi```. use the path from your module as well. Example: ```olbrichattila.godi.internal.test.noParamConstructorInterface```
 
 Note: Look at the test folder for examples, and see the following example as well:
 

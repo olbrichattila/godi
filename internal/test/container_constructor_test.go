@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	godi "github.com/olbrichattila/godi/internal"
+	godi "github.com/olbrichattila/godi/pkg"
 	"github.com/stretchr/testify/suite"
 )
 

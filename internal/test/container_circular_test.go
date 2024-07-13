@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	godi "github.com/olbrichattila/godi/internal"
+	godi "github.com/olbrichattila/godi/pkg"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -20,7 +20,7 @@ func (t *CircularTestSuite) TestDirectCircular() {
 
 	nestedCircularMock := newNestedCircularMock()
 
-	container.Set("olbrichattila.godi.test.nestedCircularInterface", nestedCircularMock)
+	container.Set("olbrichattila.godi.internal.test.nestedCircularInterface", nestedCircularMock)
 
 	_, err := container.Get(nestedCircularMock)
 	t.Error(err)
@@ -34,9 +34,9 @@ func (t *CircularTestSuite) TestMultpleCircularNesting() {
 	nestedCircularSecondMock := newNestedCircularSecondMock()
 	nestedCircularCircularMock := newNestedCircularThirdMock()
 
-	container.Set("olbrichattila.godi.test.nestedCircularFirstInterface", nestedCircularFirstMock)
-	container.Set("olbrichattila.godi.test.nestedCircularSecondInterface", nestedCircularSecondMock)
-	container.Set("olbrichattila.godi.test.nestedCircularThirdInterface", nestedCircularCircularMock)
+	container.Set("olbrichattila.godi.internal.test.nestedCircularFirstInterface", nestedCircularFirstMock)
+	container.Set("olbrichattila.godi.internal.test.nestedCircularSecondInterface", nestedCircularSecondMock)
+	container.Set("olbrichattila.godi.internal.test.nestedCircularThirdInterface", nestedCircularCircularMock)
 
 	_, err := container.Get(nestedCircularFirstMock)
 	t.Error(err)
