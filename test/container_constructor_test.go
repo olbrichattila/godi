@@ -19,7 +19,8 @@ func (t *ConstructorTestSuite) TestConstructorCalled() {
 	container := godi.New()
 	noParamConstructorMock := newNoParamConstructorMock()
 
-	container.Get(noParamConstructorMock)
+	_, err := container.Get(noParamConstructorMock)
+	t.Nil(err)
 
 	t.Equal(1, noParamConstructorMock.ConstructorCallCount())
 }

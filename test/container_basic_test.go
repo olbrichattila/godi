@@ -1,3 +1,4 @@
+// Package test testing all possible scenarios, multiple dependencies, multiple resolution and circular dependency handling
 package test
 
 import (

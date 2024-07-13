@@ -1,6 +1,41 @@
 # Dependency injection
 
+## Golang dependency injection container
 
+> For those who are missing a Dependency injection similar to what we use in some object oriented languages.
+
+> This container introduces a "Constructor" for golang structures, Those constructors will automatically be called and the 
+parameters will be resolved by their type hint recursively.
+
+## Usage:
+
+### Create your dependency container:
+```
+container := godi.New()
+```
+
+### Example constructor:
+```
+func (t *yourStruct) Construct(param yourInterfaceInterface) {
+```
+
+### Limitation:
+> It works only with receiver functions, this may change in the future.
+
+The parameter type always have to be an interface, the parameter is what have to be resolved, That can be an interface or a struct.
+
+### Map your dependencies:
+```
+container.Set("TestInterface", NewTest2())
+```
+
+Where "TestInterface" is your interface name, "NewTest2()" returns an interface or a struct. If a Constructor (exported) method is defined it will be called and the hinted dependencies will be resolved from the map (please see later)
+
+- If it is in defined in your home folder, then use only the interface name
+- If it is in a sub folder, provide full path, exampe: ```examplemodule-1.mod.ExampleInterface``` where your interface defined in folder ```./examplemodule-1/mod/```
+- If you initiated your project with a domain. (for example this module) ```github.com/olbrichattila/godi```. use the path from your module as well. Example: ```olbrichattila.godi.test.noParamConstructorInterface```
+
+Note: Look at the test folder for examples, and see the following example as well:
 
 Example usage:
 ```main.go```
