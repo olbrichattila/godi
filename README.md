@@ -1,8 +1,8 @@
 # Dependency injection
 
-Work in progress, usage description to come
 
-Example:
+
+Example usage:
 ```main.go```
 
 ```
@@ -107,8 +107,8 @@ func (t *example) Construct() {
 }
 ```
 
-TODO:
-- Check circular dependencies and throw error
-- Test
+## Please see tests folder for mocks to see more variations of usage
+
+Coming next:
 - Struct autowire
 
