@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	godi "github.com/olbrichattila/godi/pkg"
+	godi "github.com/olbrichattila/godi"
 	"github.com/stretchr/testify/suite"
 )
 
