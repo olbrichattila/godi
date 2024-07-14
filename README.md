@@ -51,7 +51,6 @@ test.DoWhatYouWant()
 
 Note: The container also returns the original (test) struct, but as interface{}. if you use this, please typecast it back. (_) parameter
 
-
 ### Usage autowire 
 Add annotation to fields like: 
 ```
