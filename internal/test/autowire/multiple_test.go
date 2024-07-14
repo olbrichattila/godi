@@ -41,7 +41,7 @@ func (t *exampleMultipleDep) mockFuncCalled() int {
 
 func (t *TestSuiteMultiple) TestBasicFunctionality() {
 	container := godi.New()
-	container.Set("olbrichattila.godi.internal.autowire-test.exampleMultipleDepInterface", &exampleMultipleDep{})
+	container.Set("olbrichattila.godi.internal.test.autowire.exampleMultipleDepInterface", &exampleMultipleDep{})
 	exampleImp := &exampleMultipleImpl{}
 
 	_, err := container.Get(exampleImp)

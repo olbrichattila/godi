@@ -21,7 +21,7 @@ func (t *TreeRecursionTestSuite) TestFirstRecursionResolveMultiple() {
 	noParamConstructorMock := newNoParamConstructorMock()
 	treeParamConstructorMock := newTreeParamConstructorMock()
 
-	container.Set("olbrichattila.godi.internal.container-test.noParamConstructorInterface", noParamConstructorMock)
+	container.Set("olbrichattila.godi.internal.test.container.noParamConstructorInterface", noParamConstructorMock)
 
 	_, err := container.Get(treeParamConstructorMock)
 	t.Nil(err)

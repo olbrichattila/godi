@@ -35,7 +35,7 @@ Where "TestInterface" is your interface name, "NewTest2()" returns an interface 
 
 - If it is in defined in your home folder, then use only the interface name
 - If it is in a sub folder, provide full path, exampe: ```examplemodule-1.mod.ExampleInterface``` where your interface defined in folder ```./examplemodule-1/mod/```
-- If you initiated your project with a domain. (for example this module) ```github.com/olbrichattila/godi```. use the path from your module as well. Example: ```olbrichattila.godi.internal.container-test.noParamConstructorInterface```
+- If you initiated your project with a domain. (for example this module) ```github.com/olbrichattila/godi```. use the path from your module as well. Example: ```olbrichattila.godi.internal.test.container.noParamConstructorInterface```
 
 Note: Look at the test folder for examples, and see the following example as well:
 
@@ -63,6 +63,49 @@ type exampleMultipleImpl struct {
 
 The dependencies will be auto wired, if you initiate your struct with the DI container as above:
 
+## Managing dependencies
+One way of managing dependencies was already introduced above:
+
+### Add single dependency
+```
+container := godi.New()
+
+container.Set("TestInterface", NewTest2())
+```
+ ### Retrieve single dependency
+
+```
+dependency, err := container.GetDependency("dependencyInterfaceName2")
+```
+
+### Add multiple dependencies at the same time
+```
+container := godi.New()
+
+dependencies := map[string]interface{}{
+	"dependencyInterfaceName1": NewDependency1(),
+	"dependencyInterfaceName2": NewDependency1(),
+	"dependencyInterfaceName3": NewDependency1(),
+}
+
+container.Build(dependencies)
+```
+
+### Flush all dependencies
+```
+	container.Flush()
+```
+
+### Delete one dependency
+```
+container.Delete("dependencyInterfaceName2")
+```
+
+### Get number or existing dependencies
+```
+count := container.Count()
+fmt.Println(count)
+```
 
 
 Example usage:
@@ -169,7 +212,4 @@ func (t *example) Construct() {
 	fmt.Println("Constructor of example2 package called")
 }
 ```
-
-## Please see tests folder for mocks to see more variations of usage
-
 

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	godi "github.com/olbrichattila/godi"
+	internalcontainer "github.com/olbrichattila/godi/internal/container"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -24,7 +25,7 @@ func (t *OneRecursionTestSuite) TestFirstRecursionReturnsErrorIfMappingNotSet() 
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	t.ErrorIs(err, godi.ErrCannotBeResolved)
+	t.ErrorIs(err, internalcontainer.ErrCannotBeResolved)
 
 }
 
@@ -34,7 +35,7 @@ func (t *OneRecursionTestSuite) TestFirstRecursionResolveSecond() {
 	noParamConstructorMock := newNoParamConstructorMock()
 	oneParamConstructorMock := newOneParamConstructorMock()
 
-	container.Set("olbrichattila.godi.internal.container-test.noParamConstructorInterface", noParamConstructorMock)
+	container.Set("olbrichattila.godi.internal.test.container.noParamConstructorInterface", noParamConstructorMock)
 
 	_, err := container.Get(oneParamConstructorMock)
 	t.Nil(err)
@@ -49,7 +50,7 @@ func (t *OneRecursionTestSuite) TestFirstRecursionResolveMultiple() {
 	noParamConstructorMock := newNoParamConstructorMock()
 	oneParamConstructorMock := newOneParamConstructorMock()
 
-	container.Set("olbrichattila.godi.internal.container-test.noParamConstructorInterface", noParamConstructorMock)
+	container.Set("olbrichattila.godi.internal.test.container.noParamConstructorInterface", noParamConstructorMock)
 
 	_, err := container.Get(oneParamConstructorMock)
 	t.Nil(err)

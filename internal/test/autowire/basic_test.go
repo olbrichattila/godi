@@ -39,7 +39,7 @@ func (t *exampleDep) mockFuncCalled() int {
 
 func (t *TestSuite) TestBasicFunctionality() {
 	container := godi.New()
-	container.Set("olbrichattila.godi.internal.autowire-test.exampleDepInterface", &exampleDep{})
+	container.Set("olbrichattila.godi.internal.test.autowire.exampleDepInterface", &exampleDep{})
 	exampleImp := &exampleImpl{}
 
 	_, err := container.Get(exampleImp)

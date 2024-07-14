@@ -22,8 +22,8 @@ func (t *NestingTestSuite) TestMultipleNesting() {
 	nestedSecondMock := newNestedSecondMock()
 	nestedThirdMock := newNestedThirdMock()
 
-	container.Set("olbrichattila.godi.internal.container-test.nestedSecondInterface", nestedSecondMock)
-	container.Set("olbrichattila.godi.internal.container-test.nestedThirdInterface", nestedThirdMock)
+	container.Set("olbrichattila.godi.internal.test.container.nestedSecondInterface", nestedSecondMock)
+	container.Set("olbrichattila.godi.internal.test.container.nestedThirdInterface", nestedThirdMock)
 
 	_, err := container.Get(nestedFirstMock)
 	t.Nil(err)
