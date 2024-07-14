@@ -7,7 +7,9 @@
 > This container introduces a "Constructor" for golang structures, Those constructors will automatically be called and the 
 parameters will be resolved by their type hint recursively.
 
-## Usage:
+> This container also introduces struct autowire notation.
+
+## Usage: Constructor dependency resolutiuon
 
 ### Create your dependency container:
 ```
@@ -16,7 +18,7 @@ container := godi.New()
 
 ### Example constructor:
 ```
-func (t *yourStruct) Construct(param yourInterfaceInterface) {
+func (t *yourStruct) Construct(param yourInterfaceInterface) {}
 ```
 
 ### Limitation:
@@ -36,6 +38,33 @@ Where "TestInterface" is your interface name, "NewTest2()" returns an interface 
 - If you initiated your project with a domain. (for example this module) ```github.com/olbrichattila/godi```. use the path from your module as well. Example: ```olbrichattila.godi.internal.container-test.noParamConstructorInterface```
 
 Note: Look at the test folder for examples, and see the following example as well:
+
+### Resolve your dependencies from your container instance:
+```
+test := NewTest
+_, err := container.Get(test)
+	if err != nil {
+		fmt.Println(err)
+	}
+test.DoWhatYouWant()
+```
+
+Note: The container also returns the original (test) struct, but as interface{}. if you use this, please typecast it back. (_) parameter
+
+
+### Usage autowire 
+Add annotation to fields like: 
+```
+type exampleMultipleImpl struct {
+	Dependency1 exampleMultipleDepInterface `di:"autowire"`
+	Dependency2 exampleMultipleDepInterface `di:"autowire"`
+	Dependency3 exampleMultipleDepInterface `di:"autowire"`
+}
+```
+
+The dependencies will be auto wired, if you initiate your struct with the DI container as above:
+
+
 
 Example usage:
 ```main.go```
@@ -144,6 +173,4 @@ func (t *example) Construct() {
 
 ## Please see tests folder for mocks to see more variations of usage
 
-Coming next:
-- Struct autowire
 

@@ -11,6 +11,8 @@ import (
 var (
 	// ErrCannotBeResolved returned when the container not able to resolve the dependency, not mapped with container.Set()
 	ErrCannotBeResolved = errors.New("the DI parameter cannot be resolved")
+	// ErrCannotBeResolved returned when the container not able to resolve the dependency, autowire possiblie received a a non exported field
+	ErrCannotBeResolvedPossibleNeedExport = errors.New("the DI parameter cannot be resolved, possible unexported field for autowire notation")
 	// ErrCircularReference returned when the dependencies would end up in a forever loop. instead golang blowing up, it returns an error.
 	ErrCircularReference = errors.New("circular reference")
 )
@@ -49,6 +51,7 @@ func (t *Cont) getRecursive(obj interface{}, callStack map[string]bool) (interfa
 	if v.Kind() == reflect.Ptr && v.Elem().Kind() == reflect.Struct {
 		rt := reflect.TypeOf(obj)
 
+		// Resolve constructor
 		method, found := rt.MethodByName("Construct")
 		if found {
 			passParams := []reflect.Value{v}
@@ -76,7 +79,41 @@ func (t *Cont) getRecursive(obj interface{}, callStack map[string]bool) (interfa
 
 			method.Func.Call(passParams)
 		}
+
+		// Resole autowire
+		vTyp := v.Elem().Type()
+		for i := 0; i < v.Elem().NumField(); i++ {
+
+			field := vTyp.Field(i)
+			tag := field.Tag.Get("di")
+			if tag == "autowire" {
+
+				resolvedField := v.Elem().FieldByName(field.Name)
+
+				if !resolvedField.CanSet() {
+					return nil, errors.Join(ErrCannotBeResolvedPossibleNeedExport, fmt.Errorf("the field name: %s", field.Name))
+				}
+
+				value, _, err := t.resolve(field.Type)
+				if err != nil {
+					// TODO we may want to join with a different error
+					return nil, err
+				}
+
+				_, err = t.getRecursive(value, callStack)
+				if err != nil {
+					// TODO we may want to join with a different error
+					return nil, err
+				}
+
+				fieldValue := reflect.ValueOf(value)
+
+				resolvedField.Set(fieldValue)
+			}
+		}
+
 	}
+
 	return obj, nil
 }
 
