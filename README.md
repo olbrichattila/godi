@@ -93,7 +93,7 @@ container.Build(dependencies)
 
 ### Flush all dependencies
 ```
-	container.Flush()
+container.Flush()
 ```
 
 ### Delete one dependency
