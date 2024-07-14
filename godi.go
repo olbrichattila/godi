@@ -96,13 +96,11 @@ func (t *Cont) getRecursive(obj interface{}, callStack map[string]bool) (interfa
 
 				value, _, err := t.resolve(field.Type)
 				if err != nil {
-					// TODO we may want to join with a different error
 					return nil, err
 				}
 
 				_, err = t.getRecursive(value, callStack)
 				if err != nil {
-					// TODO we may want to join with a different error
 					return nil, err
 				}
 
