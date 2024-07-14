@@ -11,7 +11,7 @@ import (
 var (
 	// ErrCannotBeResolved returned when the container not able to resolve the dependency, not mapped with container.Set()
 	ErrCannotBeResolved = errors.New("the DI parameter cannot be resolved")
-	// ErrCannotBeResolved returned when the container not able to resolve the dependency, autowire possiblie received a a non exported field
+	// ErrCannotBeResolvedPossibleNeedExport returned when the container not able to resolve the dependency, autowire possiblie received a a non exported field
 	ErrCannotBeResolvedPossibleNeedExport = errors.New("the DI parameter cannot be resolved, possible unexported field for autowire notation")
 	// ErrCircularReference returned when the dependencies would end up in a forever loop. instead golang blowing up, it returns an error.
 	ErrCircularReference = errors.New("circular reference")

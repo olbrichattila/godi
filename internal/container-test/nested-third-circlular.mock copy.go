@@ -11,5 +11,5 @@ type nestedCircularInterface interface {
 type nestedCircular struct {
 }
 
-func (t *nestedCircular) Construct(n nestedCircularInterface) {
+func (t *nestedCircular) Construct(_ nestedCircularInterface) {
 }
