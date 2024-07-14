@@ -1,4 +1,4 @@
-package test
+package containertest
 
 func newNestedSecondMock() nestedSecondInterface {
 	return &nestedSecond{}

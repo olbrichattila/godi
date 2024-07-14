@@ -1,4 +1,4 @@
-package test
+package containertest
 
 func newNestedCircularSecondMock() nestedCircularSecondInterface {
 	return &nestedCircularSecond{}

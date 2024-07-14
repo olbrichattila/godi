@@ -1,4 +1,4 @@
-package test
+package containertest
 
 func newNoParamConstructorMock() noParamConstructorInterface {
 	return &noParamConstructor{}

@@ -1,4 +1,4 @@
-package test
+package containertest
 
 func newTreeParamConstructorMock() threeParamRecursionConstructorInterface {
 	return &threeParamConstructor{}

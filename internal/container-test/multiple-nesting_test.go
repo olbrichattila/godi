@@ -1,4 +1,4 @@
-package test
+package containertest
 
 import (
 	"testing"
@@ -22,8 +22,8 @@ func (t *NestingTestSuite) TestMultipleNesting() {
 	nestedSecondMock := newNestedSecondMock()
 	nestedThirdMock := newNestedThirdMock()
 
-	container.Set("olbrichattila.godi.internal.test.nestedSecondInterface", nestedSecondMock)
-	container.Set("olbrichattila.godi.internal.test.nestedThirdInterface", nestedThirdMock)
+	container.Set("olbrichattila.godi.internal.container-test.nestedSecondInterface", nestedSecondMock)
+	container.Set("olbrichattila.godi.internal.container-test.nestedThirdInterface", nestedThirdMock)
 
 	_, err := container.Get(nestedFirstMock)
 	t.Nil(err)

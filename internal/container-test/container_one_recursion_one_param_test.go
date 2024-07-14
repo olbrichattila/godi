@@ -1,4 +1,4 @@
-package test
+package containertest
 
 import (
 	"fmt"
@@ -34,7 +34,7 @@ func (t *OneRecursionTestSuite) TestFirstRecursionResolveSecond() {
 	noParamConstructorMock := newNoParamConstructorMock()
 	oneParamConstructorMock := newOneParamConstructorMock()
 
-	container.Set("olbrichattila.godi.internal.test.noParamConstructorInterface", noParamConstructorMock)
+	container.Set("olbrichattila.godi.internal.container-test.noParamConstructorInterface", noParamConstructorMock)
 
 	_, err := container.Get(oneParamConstructorMock)
 	t.Nil(err)
@@ -49,7 +49,7 @@ func (t *OneRecursionTestSuite) TestFirstRecursionResolveMultiple() {
 	noParamConstructorMock := newNoParamConstructorMock()
 	oneParamConstructorMock := newOneParamConstructorMock()
 
-	container.Set("olbrichattila.godi.internal.test.noParamConstructorInterface", noParamConstructorMock)
+	container.Set("olbrichattila.godi.internal.container-test.noParamConstructorInterface", noParamConstructorMock)
 
 	_, err := container.Get(oneParamConstructorMock)
 	t.Nil(err)

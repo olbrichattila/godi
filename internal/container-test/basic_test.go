@@ -1,5 +1,5 @@
-// Package test testing all possible scenarios, multiple dependencies, multiple resolution and circular dependency handling
-package test
+// Package containertest testing all possible scenarios, multiple dependencies, multiple resolution and circular dependency handling
+package containertest
 
 import (
 	"testing"
