@@ -1,5 +1,5 @@
 // Package gody is the wrapper around dependency injection container
-package gody
+package godi
 
 import "github.com/olbrichattila/godi/internal/container"
 
