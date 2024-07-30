@@ -1,4 +1,4 @@
-// Package gody is the wrapper around dependency injection container
+// Package godi is the wrapper around dependency injection container
 package godi
 
 import "github.com/olbrichattila/godi/internal/container"
@@ -13,6 +13,7 @@ type Container interface {
 	Flush()
 	Delete(paramName string)
 	Count() int
+	Call(interface{}, ...interface{}) (interface{}, error)
 }
 
 // Cont is the container structure which follows Container interface
@@ -63,4 +64,9 @@ func (t *Cont) Delete(paramName string) {
 // Count returns how any dependencies provided
 func (t *Cont) Count() int {
 	return t.c.Count()
+}
+
+// Call can invoke a function auto resolving dependencies and passing optional extra parameters at the beginning
+func (t *Cont) Call(fn interface{}, params ...interface{}) (interface{}, error) {
+	return t.c.Call(fn, params...)
 }

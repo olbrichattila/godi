@@ -103,7 +103,7 @@ func (t *Cont) resolveConstructor(v reflect.Value, rt reflect.Type) error {
 
 		for i := 1; i < numParams; i++ {
 			paramType := methodType.In(i)
-			param, fullTypeName, err := t.resolveConstructorParam(paramType)
+			param, fullTypeName, err := t.resolveFunctionParam(paramType)
 			if err != nil {
 				return err
 			}
@@ -139,7 +139,7 @@ func (t *Cont) resolveAutoWire(v reflect.Value) error {
 				return fmt.Errorf("%w: the field name: %s", ErrCannotBeResolvedPossibleNeedExport, field.Name)
 			}
 
-			value, _, err := t.resolveConstructorParam(field.Type)
+			value, _, err := t.resolveFunctionParam(field.Type)
 			if err != nil {
 				return err
 			}
@@ -159,8 +159,8 @@ func (t *Cont) resolveAutoWire(v reflect.Value) error {
 	return nil
 }
 
-// resolveConstructorParam resolves a constructor parameter by its type.
-func (t *Cont) resolveConstructorParam(paramType reflect.Type) (interface{}, string, error) {
+// resolveFunctionParam resolves a constructor parameter by its type.
+func (t *Cont) resolveFunctionParam(paramType reflect.Type) (interface{}, string, error) {
 	pkgPath := paramType.PkgPath() + "/" + paramType.Name()
 	fullTypeName := strings.Join(strings.Split(pkgPath, "/")[1:], ".")
 	param, ok := t.dependencies[fullTypeName]
@@ -169,4 +169,40 @@ func (t *Cont) resolveConstructorParam(paramType reflect.Type) (interface{}, str
 	}
 
 	return param, fullTypeName, nil
+}
+
+// Call can invoke a function auto resolving dependencies and passing optional extra parameters at the beginning
+func (t *Cont) Call(fn interface{}, params ...interface{}) ([]reflect.Value, error) {
+	method := reflect.ValueOf(fn)
+	fnType := reflect.TypeOf(fn)
+	paramCount := len(params)
+
+	if fnType.Kind() != reflect.Func {
+		return nil, fmt.Errorf("fn is not a function")
+	}
+
+	fmt.Printf("Function has %d parameters:\n", fnType.NumIn())
+	passParams := []reflect.Value{}
+
+	// First add passed params
+	for _, param := range params {
+		// TODO: it would be nice to check if the passed param type matches the reflect class type
+		passParams = append(passParams, reflect.ValueOf(param))
+	}
+
+	// Resolve other params
+	for i := paramCount; i < fnType.NumIn(); i++ {
+		paramType := fnType.In(i)
+		param, _, err := t.resolveFunctionParam(paramType)
+		if err != nil {
+			return nil, err
+		}
+
+		passParams = append(passParams, reflect.ValueOf(param))
+		fmt.Printf("Parameter %d: %s\n", i+1, paramType)
+	}
+
+	result := method.Call(passParams)
+
+	return result, nil
 }
