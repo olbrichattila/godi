@@ -1,7 +1,11 @@
 // Package godi is the wrapper around dependency injection container
 package godi
 
-import "github.com/olbrichattila/godi/internal/container"
+import (
+	"reflect"
+
+	"github.com/olbrichattila/godi/internal/container"
+)
 
 // Container is an just a wrapper around the internal container to be able to modify the implementation without effecting end users if they would think of referencing the sub package
 type Container interface {
@@ -13,7 +17,7 @@ type Container interface {
 	Flush()
 	Delete(paramName string)
 	Count() int
-	Call(interface{}, ...interface{}) (interface{}, error)
+	Call(interface{}, ...interface{}) ([]reflect.Value, error)
 }
 
 // Cont is the container structure which follows Container interface
@@ -67,6 +71,6 @@ func (t *Cont) Count() int {
 }
 
 // Call can invoke a function auto resolving dependencies and passing optional extra parameters at the beginning
-func (t *Cont) Call(fn interface{}, params ...interface{}) (interface{}, error) {
+func (t *Cont) Call(fn interface{}, params ...interface{}) ([]reflect.Value, error) {
 	return t.c.Call(fn, params...)
 }
