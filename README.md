@@ -91,6 +91,44 @@ dependencies := map[string]interface{}{
 container.Build(dependencies)
 ```
 
+### Resolve dependencies and call a single function
+```
+container := godi.New()
+
+dependencies := map[string]interface{}{
+	"dependencyInterfaceName1": NewDependency1(),
+	"dependencyInterfaceName2": NewDependency1(),
+	"dependencyInterfaceName3": NewDependency1(),
+}
+
+container.Build(dependencies)
+
+result, err := container.Call(TestFunc)
+// Where result is a slice of Reflect.Value
+
+func TestFunc(d1 dependencyInterfaceName1, d2 dependencyInterfaceName2, d3 dependencyInterfaceName3) {
+}
+```
+
+### Resolve dependencies and add custom values and call a single function
+```
+container := godi.New()
+
+dependencies := map[string]interface{}{
+	"dependencyInterfaceName1": NewDependency1(),
+	"dependencyInterfaceName2": NewDependency1(),
+	"dependencyInterfaceName3": NewDependency1(),
+}
+
+container.Build(dependencies)
+
+result, err := container.Call(TestFunc, 55, "Hello")
+// Where result is a slice of Reflect.Value
+
+func TestFunc(intValue int, stringValue string, d1 dependencyInterfaceName1, d2 dependencyInterfaceName2, d3 dependencyInterfaceName3) {
+}
+```
+
 ### Flush all dependencies
 ```
 container.Flush()
