@@ -181,7 +181,6 @@ func (t *Cont) Call(fn interface{}, params ...interface{}) ([]reflect.Value, err
 		return nil, fmt.Errorf("fn is not a function")
 	}
 
-	fmt.Printf("Function has %d parameters:\n", fnType.NumIn())
 	passParams := []reflect.Value{}
 
 	// First add passed params
@@ -199,7 +198,6 @@ func (t *Cont) Call(fn interface{}, params ...interface{}) ([]reflect.Value, err
 		}
 
 		passParams = append(passParams, reflect.ValueOf(param))
-		fmt.Printf("Parameter %d: %s\n", i+1, paramType)
 	}
 
 	result := method.Call(passParams)
