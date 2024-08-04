@@ -197,6 +197,11 @@ func (t *Cont) Call(fn interface{}, params ...interface{}) ([]reflect.Value, err
 			return nil, err
 		}
 
+		_, err = t.getRecursive(param)
+		if err != nil {
+			return nil, err
+		}
+
 		passParams = append(passParams, reflect.ValueOf(param))
 	}
 
