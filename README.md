@@ -129,6 +129,27 @@ func TestFunc(intValue int, stringValue string, d1 dependencyInterfaceName1, d2 
 }
 ```
 
+### Non singleton resolution
+The above examples are always returning the initiated struct (like a singleton)
+If you would like to have a new instance, use a function to create the binding with the function.
+The function must follow ```func() interface{}``` always
+Example:
+```
+func yourFunction() {
+	container := godi.New()
+	oneParamConstructorMock := newOneParamConstClass()
+
+	container.Set("olbrichattila.godi.internal.test.container.noParamConstructorInterface", callerFunc)
+
+	_, err := container.Get(oneParamConstructorMock)
+	...
+}
+
+func callerFunc() interface{} {
+	return YOur()
+}
+```
+
 ### Flush all dependencies
 ```
 container.Flush()
