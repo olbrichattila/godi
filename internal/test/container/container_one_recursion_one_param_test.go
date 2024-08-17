@@ -1,7 +1,6 @@
 package containertest
 
 import (
-	"fmt"
 	"testing"
 
 	godi "github.com/olbrichattila/godi"
@@ -22,9 +21,6 @@ func (t *OneRecursionTestSuite) TestFirstRecursionReturnsErrorIfMappingNotSet() 
 	oneParamConstructorMock := newOneParamConstructorMock()
 
 	_, err := container.Get(oneParamConstructorMock)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
 	t.ErrorIs(err, internalcontainer.ErrCannotBeResolved)
 
 }

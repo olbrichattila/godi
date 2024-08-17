@@ -77,6 +77,10 @@ func (t *Cont) Get(obj interface{}) (interface{}, error) {
 
 // getRecursive resolves dependencies recursively, tracking call stack to detect circular references.
 func (t *Cont) getRecursive(obj interface{}) (interface{}, error) {
+	if fn, ok := obj.(func() interface{}); ok {
+		obj = fn()
+	}
+
 	v := reflect.ValueOf(obj)
 
 	if v.Kind() == reflect.Ptr && v.Elem().Kind() == reflect.Struct {
@@ -97,6 +101,10 @@ func (t *Cont) getRecursive(obj interface{}) (interface{}, error) {
 // resolveConstructor resolves dependencies for the constructor method.
 func (t *Cont) resolveConstructor(v reflect.Value, rt reflect.Type) error {
 	if method, found := rt.MethodByName("Construct"); found {
+		if t.callStack == nil {
+			t.callStack = make(map[string]bool)
+		}
+
 		passParams := []reflect.Value{v}
 		methodType := method.Type
 		numParams := methodType.NumIn()
@@ -168,11 +176,16 @@ func (t *Cont) resolveFunctionParam(paramType reflect.Type) (interface{}, string
 		return nil, fullTypeName, fmt.Errorf("%w: dependency name: %s", ErrCannotBeResolved, fullTypeName)
 	}
 
+	if fn, ok := param.(func() interface{}); ok {
+		param = fn()
+	}
+
 	return param, fullTypeName, nil
 }
 
 // Call can invoke a function auto resolving dependencies and passing optional extra parameters at the beginning
 func (t *Cont) Call(fn interface{}, params ...interface{}) ([]reflect.Value, error) {
+	t.callStack = make(map[string]bool)
 	method := reflect.ValueOf(fn)
 	fnType := reflect.TypeOf(fn)
 	paramCount := len(params)
