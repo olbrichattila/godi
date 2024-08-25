@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"sync"
 )
 
 var (
@@ -26,22 +27,29 @@ func New() *Cont {
 
 // Cont is the container returned by New.
 type Cont struct {
+	mu           sync.Mutex
 	callStack    map[string]bool
 	dependencies map[string]interface{}
 }
 
 // Build entire dependency tree
 func (t *Cont) Build(dependencies map[string]interface{}) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
 	t.dependencies = dependencies
 }
 
 // Set registers a new dependency. Provide a "packagePath.InterfaceName" as a string and your dependency, which should be an interface or struct.
 func (t *Cont) Set(paramName string, dependency interface{}) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
 	t.dependencies[paramName] = dependency
 }
 
 // GetDependency retrieve the dependency, or returns error
 func (t *Cont) GetDependency(paramName string) (interface{}, error) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
 	if dep, ok := t.dependencies[paramName]; ok {
 		return dep, nil
 	}
@@ -51,26 +59,36 @@ func (t *Cont) GetDependency(paramName string) (interface{}, error) {
 
 // GetDependencies returns the entire dependency map
 func (t *Cont) GetDependencies() map[string]interface{} {
+	t.mu.Lock()
+	defer t.mu.Unlock()
 	return t.dependencies
 }
 
 // Flush dependencies
 func (t *Cont) Flush() {
+	t.mu.Lock()
+	defer t.mu.Unlock()
 	t.dependencies = make(map[string]interface{})
 }
 
 // Delete one dependency
 func (t *Cont) Delete(paramName string) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
 	delete(t.dependencies, paramName)
 }
 
 // Count returns how any dependencies provided
 func (t *Cont) Count() int {
+	t.mu.Lock()
+	defer t.mu.Unlock()
 	return len(t.dependencies)
 }
 
 // Get resolves dependencies. Use a construct function with your dependency interface type hints. They will be resolved recursively.
 func (t *Cont) Get(obj interface{}) (interface{}, error) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
 	t.callStack = make(map[string]bool)
 	return t.getRecursive(obj)
 }
@@ -185,6 +203,8 @@ func (t *Cont) resolveFunctionParam(paramType reflect.Type) (interface{}, string
 
 // Call can invoke a function auto resolving dependencies and passing optional extra parameters at the beginning
 func (t *Cont) Call(fn interface{}, params ...interface{}) ([]reflect.Value, error) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
 	t.callStack = make(map[string]bool)
 	method := reflect.ValueOf(fn)
 	fnType := reflect.TypeOf(fn)
