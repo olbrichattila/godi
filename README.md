@@ -1,277 +1,272 @@
-# Dependency injection
+# Dependency Injection
 
-## Golang dependency injection container
+## Golang Dependency Injection Container
 
-> For those who are missing a Dependency injection similar to what we use in some object oriented languages.
+> For developers who miss dependency injection as seen in object-oriented languages.
 
-> This container introduces a "Constructor" for golang structures, Those constructors will automatically be called and the 
-parameters will be resolved by their type hint recursively.
+This container introduces a "Constructor" mechanism for Golang structures. These constructors are automatically called, and their parameters are resolved recursively based on type hints.
 
-> This container also introduces struct autowire notation.
+Additionally, the container supports struct autowiring.
 
-## Usage: Constructor dependency resolutiuon
+---
 
-### Create your dependency container:
-```
+## Usage: Constructor Dependency Resolution
+
+### Create Your Dependency Container:
+```go
 container := godi.New()
 ```
 
-### Example constructor:
-```
-func (t *yourStruct) Construct(param yourInterfaceInterface) {}
+### Example Constructor:
+```go
+func (t *yourStruct) Construct(param yourInterface) {}
 ```
 
-### Limitation:
-> It works only with receiver functions, this may change in the future.
+### Limitations:
+- Works only with receiver functions (subject to change in the future).
+- Parameters must be interfaces, which will be resolved as either interfaces or structs.
 
-The parameter type always have to be an interface, the parameter is what have to be resolved, That can be an interface or a struct.
-
-### Map your dependencies:
-```
+### Mapping Dependencies:
+```go
 container.Set("TestInterface", NewTest2())
 ```
+- If the interface is in the root folder, use only its name.
+- If in a subfolder, provide the full path, e.g., `examplemodule-1.mod.ExampleInterface` (where the interface is in `./examplemodule-1/mod/`).
+- If your project has a domain (e.g., `github.com/olbrichattila/godi`), use the module-relative path: `olbrichattila.godi.internal.test.container.noParamConstructorInterface`.
 
-Where "TestInterface" is your interface name, "NewTest2()" returns an interface or a struct. If a Constructor (exported) method is defined it will be called and the hinted dependencies will be resolved from the map (please see later)
+For more examples, check the test folder.
 
-- If it is in defined in your home folder, then use only the interface name
-- If it is in a sub folder, provide full path, exampe: ```examplemodule-1.mod.ExampleInterface``` where your interface defined in folder ```./examplemodule-1/mod/```
-- If you initiated your project with a domain. (for example this module) ```github.com/olbrichattila/godi```. use the path from your module as well. Example: ```olbrichattila.godi.internal.test.container.noParamConstructorInterface```
-
-Note: Look at the test folder for examples, and see the following example as well:
-
-### Resolve your dependencies from your container instance:
-```
-test := NewTest
+### Resolving Dependencies:
+```go
+test := NewTest()
 _, err := container.Get(test)
-	if err != nil {
-		fmt.Println(err)
-	}
+if err != nil {
+    fmt.Println(err)
+}
 test.DoWhatYouWant()
 ```
+**Note:** The container returns the struct as `interface{}`; typecast it if needed.
 
-Note: The container also returns the original (test) struct, but as interface{}. if you use this, please typecast it back. (_) parameter
+---
 
-### Usage autowire 
-Add annotation to fields like: 
-```
+## Autowire Usage
+
+To enable autowiring, annotate struct fields:
+```go
 type exampleMultipleImpl struct {
-	Dependency1 exampleMultipleDepInterface `di:"autowire"`
-	Dependency2 exampleMultipleDepInterface `di:"autowire"`
-	Dependency3 exampleMultipleDepInterface `di:"autowire"`
+    Dependency1 exampleMultipleDepInterface `di:"autowire"`
+    Dependency2 exampleMultipleDepInterface `di:"autowire"`
+    Dependency3 exampleMultipleDepInterface `di:"autowire"`
 }
 ```
+Dependencies will be injected automatically when the struct is initialized with the DI container.
 
-The dependencies will be auto wired, if you initiate your struct with the DI container as above:
+---
 
-## Managing dependencies
-One way of managing dependencies was already introduced above:
+## Managing Dependencies
 
-### Add single dependency
-```
+### Adding a Single Dependency:
+```go
 container := godi.New()
-
 container.Set("TestInterface", NewTest2())
 ```
- ### Retrieve single dependency
 
-```
+### Retrieving a Single Dependency:
+```go
 dependency, err := container.GetDependency("dependencyInterfaceName2")
 ```
 
-### Add multiple dependencies at the same time
-```
+### Adding Multiple Dependencies:
+```go
 container := godi.New()
 
 dependencies := map[string]interface{}{
-	"dependencyInterfaceName1": NewDependency1(),
-	"dependencyInterfaceName2": NewDependency1(),
-	"dependencyInterfaceName3": NewDependency1(),
+    "dependencyInterfaceName1": NewDependency1(),
+    "dependencyInterfaceName2": NewDependency2(),
+    "dependencyInterfaceName3": NewDependency3(),
 }
 
 container.Build(dependencies)
 ```
 
-### Resolve dependencies and call a single function
-```
+### Resolving Dependencies and Calling a Function:
+```go
 container := godi.New()
 
 dependencies := map[string]interface{}{
-	"dependencyInterfaceName1": NewDependency1(),
-	"dependencyInterfaceName2": NewDependency1(),
-	"dependencyInterfaceName3": NewDependency1(),
+    "dependencyInterfaceName1": NewDependency1(),
+    "dependencyInterfaceName2": NewDependency2(),
+    "dependencyInterfaceName3": NewDependency3(),
 }
 
 container.Build(dependencies)
 
 result, err := container.Call(TestFunc)
-// Where result is a slice of Reflect.Value
+// result is a slice of reflect.Value
 
-func TestFunc(d1 dependencyInterfaceName1, d2 dependencyInterfaceName2, d3 dependencyInterfaceName3) {
-}
+func TestFunc(d1 dependencyInterfaceName1, d2 dependencyInterfaceName2, d3 dependencyInterfaceName3) {}
 ```
 
-### Resolve dependencies and add custom values and call a single function
-```
+### Resolving Dependencies with Custom Values:
+```go
 container := godi.New()
 
 dependencies := map[string]interface{}{
-	"dependencyInterfaceName1": NewDependency1(),
-	"dependencyInterfaceName2": NewDependency1(),
-	"dependencyInterfaceName3": NewDependency1(),
+    "dependencyInterfaceName1": NewDependency1(),
+    "dependencyInterfaceName2": NewDependency2(),
+    "dependencyInterfaceName3": NewDependency3(),
 }
 
 container.Build(dependencies)
 
 result, err := container.Call(TestFunc, 55, "Hello")
-// Where result is a slice of Reflect.Value
+// result is a slice of reflect.Value
 
-func TestFunc(intValue int, stringValue string, d1 dependencyInterfaceName1, d2 dependencyInterfaceName2, d3 dependencyInterfaceName3) {
-}
+func TestFunc(intValue int, stringValue string, d1 dependencyInterfaceName1, d2 dependencyInterfaceName2, d3 dependencyInterfaceName3) {}
 ```
 
-### Non singleton resolution
-The above examples are always returning the initiated struct (like a singleton)
-If you would like to have a new instance, use a function to create the binding with the function.
-The function must follow ```func() interface{}``` always
-Example:
-```
+### Non-Singleton Resolution:
+By default, dependencies are treated as singletons. If you need a new instance each time, bind a function that returns a new object:
+```go
 func yourFunction() {
-	container := godi.New()
-	oneParamConstructorMock := newOneParamConstClass()
+    container := godi.New()
+    oneParamConstructorMock := newOneParamConstClass()
 
-	container.Set("olbrichattila.godi.internal.test.container.noParamConstructorInterface", callerFunc)
+    container.Set("olbrichattila.godi.internal.test.container.noParamConstructorInterface", callerFunc)
 
-	_, err := container.Get(oneParamConstructorMock)
-	...
+    _, err := container.Get(oneParamConstructorMock)
+    ...
 }
 
 func callerFunc() interface{} {
-	return YOur()
+    return Your()
 }
 ```
 
-### Flush all dependencies
-```
+### Flushing All Dependencies:
+```go
 container.Flush()
 ```
 
-### Delete one dependency
-```
+### Deleting a Single Dependency:
+```go
 container.Delete("dependencyInterfaceName2")
 ```
 
-### Get number or existing dependencies
-```
+### Getting the Number of Dependencies:
+```go
 count := container.Count()
 fmt.Println(count)
 ```
 
+---
 
-Example usage:
-```main.go```
+## Example Usage
 
-```
+### `main.go`
+```go
 package main
 
 import (
-	"fmt"
-	example1 "godi-test/examplemodule-1/mod"
-	example2 "godi-test/examplemodule-2"
-
-	"github.com/olbrichattila/godi"
+    "fmt"
+    example1 "godi-test/examplemodule-1/mod"
+    example2 "godi-test/examplemodule-2"
+    "github.com/olbrichattila/godi"
 )
 
 func main() {
-	container := godi.New()
-	container.Set("TestInterface2", NewTest2())
-	container.Set("examplemodule-1.mod.ExampleInterface", example1.New())
-	container.Set("examplemodule-2.ExampleInterface", example2.New())
+    container := godi.New()
+    container.Set("TestInterface2", NewTest2())
+    container.Set("examplemodule-1.mod.ExampleInterface", example1.New())
+    container.Set("examplemodule-2.ExampleInterface", example2.New())
 
-	_, err := container.Get(NewTest())
-	if err != nil {
-		fmt.Println(err)
-	}
+    _, err := container.Get(NewTest())
+    if err != nil {
+        fmt.Println(err)
+    }
 }
 
 func NewTest() TestInterface {
-	return &test{}
+    return &test{}
 }
 
 type TestInterface interface {
-	Construct(TestInterface2, example1.ExampleInterface)
+    Construct(TestInterface2, example1.ExampleInterface)
 }
 
 type test struct{}
 
 func (*test) Construct(i TestInterface2, ex1 example1.ExampleInterface) {
-	fmt.Println("Hello from construct")
+    fmt.Println("Hello from construct")
 }
 
 func NewTest2() TestInterface2 {
-	return &test2{}
+    return &test2{}
 }
 
 type TestInterface2 interface {
-	Construct()
+    Construct()
 }
 
 type test2 struct{}
 
 func (*test2) Construct() {
-	fmt.Println("Hello from construct 2")
+    fmt.Println("Hello from construct 2")
 }
-
 ```
-```examplemodule-1/mod/example1.go```
 
-```
+### `examplemodule-1/mod/example1.go`
+```go
 package example1
 
 import (
-	"fmt"
-	example2 "godi-test/examplemodule-2"
+    "fmt"
+    example2 "godi-test/examplemodule-2"
 )
 
 func New() ExampleInterface {
-	return &example{}
+    return &example{}
 }
 
 type ExampleInterface interface {
-	Construct(example2.ExampleInterface)
+    Construct(example2.ExampleInterface)
 }
 
-type example struct {
-}
+type example struct {}
 
 func (t *example) Construct(e example2.ExampleInterface) {
-	fmt.Println("Constructor of example1 package called")
+    fmt.Println("Constructor of example1 package called")
 }
+```
 
-```
-```examplemodule-2/example2.go```
-```
+### `examplemodule-2/example2.go`
+```go
 package example2
 
 import (
-	"fmt"
+    "fmt"
 )
 
 func New() ExampleInterface {
-	return &example{}
+    return &example{}
 }
 
 type ExampleInterface interface {
-	Construct()
+    Construct()
 }
 
-type example struct {
-}
+type example struct {}
 
 func (t *example) Construct() {
-	fmt.Println("Constructor of example2 package called")
+    fmt.Println("Constructor of example2 package called")
 }
 ```
 
-## About me:
-- Learn more about me on my personal website. https://attilaolbrich.co.uk/menu/my-story
-- Check out my latest blog blog at my personal page. https://attilaolbrich.co.uk/blog/1/single
+---
+
+## About Me
+- Learn more about me on my [personal website](https://attilaolbrich.co.uk/menu/my-story).
+- Check out my latest [blog post](https://attilaolbrich.co.uk/blog/1/single).
+
+---
+
